@@ -1,6 +1,7 @@
 import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
-import {
+import
+{
   Image,
   Platform,
   ScrollView,
@@ -8,11 +9,24 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Button,
+  AsyncStorage
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
 
-export default function HomeScreen() {
+const _showMoreApp = () =>
+{
+  this.props.navigation.navigate( 'Other' );
+};
+
+const _signOutAsync = async () =>
+{
+  await AsyncStorage.clear();
+  this.props.navigation.navigate( 'Auth' );
+};
+export default function HomeScreen ()
+{
   return (
     <View style={styles.container}>
       <ScrollView
@@ -22,20 +36,21 @@ export default function HomeScreen() {
           <Image
             source={
               __DEV__
-                ? require('../assets/images/robot-dev.png')
-                : require('../assets/images/robot-prod.png')
+                ? require( '../assets/images/robot-dev.png' )
+                : require( '../assets/images/robot-prod.png' )
             }
             style={styles.welcomeImage}
           />
         </View>
-
+        <Button title="Show me more of the app" onPress={_showMoreApp} />
+        <Button title="Actually, sign me out :)" onPress={_signOutAsync} />
         <View style={styles.getStartedContainer}>
           <DevelopmentModeNotice />
 
           <Text style={styles.getStartedText}>Get started by opening</Text>
 
           <View
-            style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
+            style={[ styles.codeHighlightContainer, styles.homeScreenFilename ]}>
             <MonoText>screens/HomeScreen.js</MonoText>
           </View>
 
@@ -59,7 +74,7 @@ export default function HomeScreen() {
         </Text>
 
         <View
-          style={[styles.codeHighlightContainer, styles.navigationFilename]}>
+          style={[ styles.codeHighlightContainer, styles.navigationFilename ]}>
           <MonoText style={styles.codeHighlightText}>
             navigation/MainTabNavigator.js
           </MonoText>
@@ -73,8 +88,10 @@ HomeScreen.navigationOptions = {
   header: null,
 };
 
-function DevelopmentModeNotice() {
-  if (__DEV__) {
+function DevelopmentModeNotice ()
+{
+  if ( __DEV__ )
+  {
     const learnMoreButton = (
       <Text onPress={handleLearnMorePress} style={styles.helpLinkText}>
         Learn more
@@ -87,7 +104,8 @@ function DevelopmentModeNotice() {
         useful development tools. {learnMoreButton}
       </Text>
     );
-  } else {
+  } else
+  {
     return (
       <Text style={styles.developmentModeText}>
         You are not in development mode: your app will run at full speed.
@@ -96,19 +114,21 @@ function DevelopmentModeNotice() {
   }
 }
 
-function handleLearnMorePress() {
+function handleLearnMorePress ()
+{
   WebBrowser.openBrowserAsync(
     'https://docs.expo.io/versions/latest/workflow/development-mode/'
   );
 }
 
-function handleHelpPress() {
+function handleHelpPress ()
+{
   WebBrowser.openBrowserAsync(
     'https://docs.expo.io/versions/latest/workflow/up-and-running/#cant-see-your-changes'
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -161,7 +181,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    ...Platform.select({
+    ...Platform.select( {
       ios: {
         shadowColor: 'black',
         shadowOffset: { width: 0, height: -3 },
@@ -171,7 +191,7 @@ const styles = StyleSheet.create({
       android: {
         elevation: 20,
       },
-    }),
+    } ),
     alignItems: 'center',
     backgroundColor: '#fbfbfb',
     paddingVertical: 20,
@@ -195,4 +215,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#2e78b7',
   },
-});
+} );
