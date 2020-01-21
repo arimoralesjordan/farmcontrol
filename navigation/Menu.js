@@ -1,47 +1,68 @@
 import React from 'react';
 import { DrawerNavigatorItems } from 'react-navigation-drawer';
-import { ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity, Linking } from 'react-native';
+import { ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity, Linking, AsyncStorage } from 'react-native';
 import { Block, Text, theme } from 'galio-framework';
 import Icon from '../components/Icon';
 import Images from '../constants/Images';
 import { DrawerItem } from '../components/index';
-
+import { backend } from '../constants';
 import nowTheme from '../constants/Theme';
 
-const { width } = Dimensions.get('screen');
+const { width } = Dimensions.get( 'screen' );
+
+_logOutAsync = async ( props ) =>
+{
+  fetch( backend.url + 'repos/getredash/redash/issues', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify( {} ),
+  } ).then( ( response ) => response.json() )
+    .then( async ( responseJson ) =>
+    {
+      await AsyncStorage.removeItem( 'userToken' );
+      props.navigation.navigate( 'Onboarding' );
+    } )
+    .catch( ( error ) =>
+    {
+      console.error( error );
+    } );
+};
 
 const Drawer = props => (
-  <Block style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
-    <Block style={styles.header}>
-      <Image style={styles.logo} source={Images.Logo} />
-      <Block right style={styles.headerIcon}>
-        <Icon name="align-left-22x" family="NowExtra" size={15} color={'white'} />
+  <Block style={ styles.container } forceInset={ { top: 'always', horizontal: 'never' } }>
+    <Block style={ styles.header }>
+      <Image style={ styles.logo } source={ Images.Logo } />
+      <Block right style={ styles.headerIcon }>
+        <Icon name="align-left-22x" family="NowExtra" size={ 15 } color={ 'white' } />
       </Block>
     </Block>
 
     <Block flex>
-      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-        <DrawerNavigatorItems {...props} />
-        <Block flex style={{ marginTop: 24, marginVertical: 8, paddingHorizontal: 8 }}>
+      <ScrollView showsVerticalScrollIndicator={ false } style={ { flex: 1 } }>
+        <DrawerNavigatorItems { ...props } />
+        <Block flex style={ { marginTop: 24, marginVertical: 8, paddingHorizontal: 8 } }>
           <Block
-            style={{ borderColor: 'white', width: '93%', borderWidth: StyleSheet.hairlineWidth, marginHorizontal: 10}}
+            style={ { borderColor: 'white', width: '93%', borderWidth: StyleSheet.hairlineWidth, marginHorizontal: 10 } }
           />
           <Text
-            color={nowTheme.COLORS.WHITE}
-            style={{ marginTop: 30, marginLeft: 20, marginBottom: 10, fontFamily: 'montserrat-regular', fontWeight: '300', fontSize: 12}}
+            color={ nowTheme.COLORS.WHITE }
+            style={ { marginTop: 30, marginLeft: 20, marginBottom: 10, fontFamily: 'montserrat-regular', fontWeight: '300', fontSize: 12 } }
           >
             DOCUMENTATION
           </Text>
         </Block>
-        <TouchableOpacity onPress={() => props.navigation.navigate('Onboarding')}
-          style={{ marginLeft: 10, fontFamily: 'montserrat-regular' }}
+        <TouchableOpacity onPress={ () => props.navigation.navigate( 'Onboarding' ) }
+          style={ { marginLeft: 10, fontFamily: 'montserrat-regular' } }
         >
-          <DrawerItem {...props} title="GETTING STARTED" />
+          <DrawerItem { ...props } title="GETTING STARTED" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => props.navigation.navigate('Onboarding')}
-          style={{ marginLeft: 10, fontFamily: 'montserrat-regular' }}
+        <TouchableOpacity onPress={ () => _logOutAsync( props ) }
+          style={ { marginLeft: 10, fontFamily: 'montserrat-regular' } }
         >
-          <DrawerItem {...props} title="LOGOUT" />
+          <DrawerItem { ...props } title="LOGOUT" />
         </TouchableOpacity>
       </ScrollView>
     </Block>
@@ -49,7 +70,7 @@ const Drawer = props => (
 );
 
 const Menu = {
-  contentComponent: props => <Drawer {...props} />,
+  contentComponent: props => <Drawer { ...props } />,
   drawerBackgroundColor: nowTheme.COLORS.PRIMARY,
   drawerWidth: width * 0.8,
   contentOptions: {
@@ -76,7 +97,7 @@ const Menu = {
   }
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   container: {
     flex: 1
   },
@@ -93,6 +114,6 @@ const styles = StyleSheet.create({
     height: 40,
     width: 37
   }
-});
+} );
 
 export default Menu;
