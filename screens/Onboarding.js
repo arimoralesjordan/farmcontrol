@@ -5,6 +5,7 @@ import { Block, Button, Text, theme } from 'galio-framework';
 const { height, width } = Dimensions.get( 'screen' );
 import { Images, nowTheme } from '../constants/';
 import { HeaderHeight } from '../constants/utils';
+import ControlGanadero from '../controllers/ControlGanadero';
 
 export default class Onboarding extends React.Component
 {
@@ -19,6 +20,9 @@ export default class Onboarding extends React.Component
     if ( userToken )
     {
       this.props.navigation.navigate( 'Home' );
+    } else
+    {
+      ControlGanadero._init();
     }
   };
   render ()

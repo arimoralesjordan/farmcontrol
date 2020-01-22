@@ -7,6 +7,7 @@ import Images from '../constants/Images';
 import { DrawerItem } from '../components/index';
 import { backend } from '../constants';
 import nowTheme from '../constants/Theme';
+import ControlGanadero from '../controllers/ControlGanadero';
 
 const { width } = Dimensions.get( 'screen' );
 
@@ -23,6 +24,7 @@ _logOutAsync = async ( props ) =>
     .then( async ( responseJson ) =>
     {
       await AsyncStorage.removeItem( 'userToken' );
+      ControlGanadero._destroy();
       props.navigation.navigate( 'Onboarding' );
     } )
     .catch( ( error ) =>
