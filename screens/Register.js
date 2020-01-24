@@ -12,6 +12,7 @@ import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framewor
 
 import { Button, Icon, Input } from '../components';
 import { Images, nowTheme, backend } from '../constants';
+import Pro from './Pro';
 
 const { width, height } = Dimensions.get( 'screen' );
 
@@ -21,28 +22,38 @@ const DismissKeyboard = ( { children } ) => (
 
 class Register extends React.Component
 {
+  fullname;
+  email;
+  pass;
   _signInAsync = async () =>
   {
-    fetch( backend.url + 'repos/getredash/redash/issues', {
+    fetch( backend.api + 'register', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify( {
-        firstParam: 'yourValue',
-        secondParam: 'yourOtherValue',
-      } ),
-    } ).then( ( response ) => response.json() )
-      .then( async ( responseJson ) =>
-      {
-        await AsyncStorage.setItem( 'userToken', 'scope' );
-        this.props.navigation.navigate( 'Home' );
-      } )
-      .catch( ( error ) =>
-      {
-        console.error( error );
-      } );;
+        name: this.fullname,
+        email: this.email,
+        passord: this.pass
+      }),
+    }).then((response) => {
+      // response json devuelve una promesa
+      return response.json().then( data => ({
+        data: data,
+        status: response.status,
+        ok: response.ok
+      }));
+    })
+      .then( async ( responseJson) => {
+        console.log(responseJson);
+        // await AsyncStorage.setItem( 'userToken', 'scope' );
+        // this.props.navigation.navigate( 'Home' );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
   };
   render ()
@@ -116,22 +127,8 @@ class Register extends React.Component
                         <Block>
                           <Block width={ width * 0.8 } style={ { marginBottom: 5 } }>
                             <Input
-                              placeholder="Nombre"
-                              style={ styles.inputs }
-                              iconContent={
-                                <Icon
-                                  size={ 16 }
-                                  color="#ADB5BD"
-                                  name="profile-circle"
-                                  family="NowExtra"
-                                  style={ styles.inputIcons }
-                                />
-                              }
-                            />
-                          </Block>
-                          <Block width={ width * 0.8 } style={ { marginBottom: 5 } }>
-                            <Input
-                              placeholder="Apellido"
+                              placeholder="Nombre y Apellido"
+                              onChangeText={(val) => this.fullname = val}
                               style={ styles.inputs }
                               iconContent={
                                 <Icon
@@ -147,6 +144,7 @@ class Register extends React.Component
                           <Block width={ width * 0.8 }>
                             <Input
                               placeholder="Email"
+                              onChangeText={(val) => this.email = val}
                               style={ styles.inputs }
                               iconContent={
                                 <Icon
@@ -162,6 +160,7 @@ class Register extends React.Component
                           <Block width={ width * 0.8 }>
                             <Input
                               placeholder="Password"
+                              onChangeText={(val) => this.pass = val}
                               secureTextEntry={ true }
                               style={ styles.inputs }
                               iconContent={
