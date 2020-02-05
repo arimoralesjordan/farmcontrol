@@ -1,4 +1,5 @@
+import { backendUrl } from 'react-native-dotenv'
 export default
     {
-        url: 'https://api.github.com/'
+        url: backendUrl
     };

@@ -23,15 +23,16 @@ class Register extends React.Component
 {
   _signInAsync = async () =>
   {
-    fetch( backend.url + 'repos/getredash/redash/issues', {
+    fetch( backend.url + '/api/register', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify( {
-        firstParam: 'yourValue',
-        secondParam: 'yourOtherValue',
+        name: 'yourValue',
+        email: 'yourOtherValue',
+        password: 'yourOtherValue',
       } ),
     } ).then( ( response ) => response.json() )
       .then( async ( responseJson ) =>
