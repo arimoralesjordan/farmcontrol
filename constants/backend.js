@@ -1,5 +1,4 @@
-import { backendUrl } from 'react-native-dotenv'
-export default
-    {
-        url: backendUrl
-    };
+import { backendUrl } from 'react-native-dotenv';
+export default {
+  url: 'http://192.168.1.15:8000'
+};

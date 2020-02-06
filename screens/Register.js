@@ -1,79 +1,103 @@
-import React from 'react';
-import
-{
+import React, { Component } from 'react';
+import {
   StyleSheet,
   ImageBackground,
   Dimensions,
   StatusBar,
   TouchableWithoutFeedback,
-  Keyboard, AsyncStorage
+  Keyboard,
+  AsyncStorage
 } from 'react-native';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
 
 import { Button, Icon, Input } from '../components';
 import { Images, nowTheme, backend } from '../constants';
 
-const { width, height } = Dimensions.get( 'screen' );
+const { width, height } = Dimensions.get('screen');
 
-const DismissKeyboard = ( { children } ) => (
-  <TouchableWithoutFeedback onPress={ () => Keyboard.dismiss() }>{ children }</TouchableWithoutFeedback>
+const DismissKeyboard = ({ children }) => (
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
 );
 
-class Register extends React.Component
-{
-  _signInAsync = async () =>
-  {
-    fetch( backend.url + '/api/register', {
+export default function Register(props) {
+  const [state, setState] = React.useState({
+    firstName: 'q234234234',
+    lastName: 'q234234234',
+    name: 'q234234234',
+    email: 'q123123' + Date.now() + '@sdfsdf.com',
+    password: 'q3123123123'
+  });
+  console.log('backend.url', backend.url);
+
+  _signInAsync = async () => {
+    fetch(backend.url + '/api/register', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify( {
-        name: 'yourValue',
-        email: 'yourOtherValue',
-        password: 'yourOtherValue',
-      } ),
-    } ).then( ( response ) => response.json() )
-      .then( async ( responseJson ) =>
-      {
-        await AsyncStorage.setItem( 'userToken', 'scope' );
-        this.props.navigation.navigate( 'Home' );
-      } )
-      .catch( ( error ) =>
-      {
-        console.error( error );
-      } );;
-
+      body: JSON.stringify(state)
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(async responseJson => {
+        await AsyncStorage.setItem('userData', JSON.stringify(responseJson));
+        _logInAsync();
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
-  render ()
-  {
-    return (
-      <DismissKeyboard>
-        <Block flex middle>
-          <ImageBackground
-            source={ Images.RegisterBackground }
-            style={ styles.imageBackgroundContainer }
-            imageStyle={ styles.imageBackground }
-          >
-            <Block flex middle>
-              <Block style={ styles.registerContainer }>
-                <Block flex space="evenly">
-                  <Block flex={ 0.4 } middle style={ styles.socialConnect }>
-                    <Block flex={ 0.5 } middle>
-                      <Text
-                        style={ {
-                          fontFamily: 'montserrat-regular',
-                          textAlign: 'center'
-                        } }
-                        color="#333"
-                        size={ 24 }
-                      >
-                        Registrate
-                      </Text>
-                    </Block>
+  _logInAsync = async () => {
+    fetch(backend.url + '/api/login', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: state.email, password: state.password })
+    })
+      .then(response => {
+        console.log('response', response);
+        return response.json();
+      })
+      .then(async responseJson => {
+        console.log('responseJson', JSON.stringify(responseJson));
+        await AsyncStorage.setItem('userToken', JSON.stringify(responseJson));
+        props.navigation.navigate('Home');
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
 
-                    <Block flex={ 0.5 } row middle space="between" style={ { marginBottom: 18 } }>
+  return (
+    <DismissKeyboard>
+      <Block flex middle>
+        <ImageBackground
+          source={Images.RegisterBackground}
+          style={styles.imageBackgroundContainer}
+          imageStyle={styles.imageBackground}
+        >
+          <Block flex middle>
+            <Block style={styles.registerContainer}>
+              <Block flex space="evenly">
+                <Block flex={0.4} middle style={styles.socialConnect}>
+                  <Block flex={0.5} middle>
+                    <Text
+                      style={{
+                        fontFamily: 'montserrat-regular',
+                        textAlign: 'center'
+                      }}
+                      color="#333"
+                      size={24}
+                    >
+                      Registrate
+                    </Text>
+                  </Block>
+
+                  {/* <Block flex={0.5} row middle space="between" style={{ marginBottom: 18 }}>
                       <GaButton
                         round
                         onlyIcon
@@ -86,7 +110,7 @@ class Register extends React.Component
                         style={ [ styles.social, styles.shadow ] }
                       />
 
-                      {/* <GaButton
+                      <GaButton
                         round
                         onlyIcon
                         shadowless
@@ -96,133 +120,153 @@ class Register extends React.Component
                         iconSize={ theme.SIZES.BASE * 1.625 }
                         color={ nowTheme.COLORS.FACEBOOK }
                         style={ [ styles.social, styles.shadow ] }
-                      /> */}
-                    </Block>
-                  </Block>
-                  <Block flex={ 0.1 } middle>
-                    <Text
-                      style={ {
-                        fontFamily: 'montserrat-regular',
-                        textAlign: 'center'
-                      } }
-                      muted
-                      size={ 16 }
-                    >
-                      o se Clasico
-                    </Text>
-                  </Block>
-                  <Block flex={ 1 } middle space="between">
-                    <Block center flex={ 0.9 }>
-                      <Block flex space="between">
-                        <Block>
-                          <Block width={ width * 0.8 } style={ { marginBottom: 5 } }>
-                            <Input
-                              placeholder="Nombre"
-                              style={ styles.inputs }
-                              iconContent={
-                                <Icon
-                                  size={ 16 }
-                                  color="#ADB5BD"
-                                  name="profile-circle"
-                                  family="NowExtra"
-                                  style={ styles.inputIcons }
-                                />
-                              }
-                            />
-                          </Block>
-                          <Block width={ width * 0.8 } style={ { marginBottom: 5 } }>
-                            <Input
-                              placeholder="Apellido"
-                              style={ styles.inputs }
-                              iconContent={
-                                <Icon
-                                  size={ 16 }
-                                  color="#ADB5BD"
-                                  name="profile-circle"
-                                  family="NowExtra"
-                                  style={ styles.inputIcons }
-                                />
-                              }
-                            />
-                          </Block>
-                          <Block width={ width * 0.8 }>
-                            <Input
-                              placeholder="Email"
-                              style={ styles.inputs }
-                              iconContent={
-                                <Icon
-                                  size={ 16 }
-                                  color="#ADB5BD"
-                                  name="email-852x"
-                                  family="NowExtra"
-                                  style={ styles.inputIcons }
-                                />
-                              }
-                            />
-                          </Block>
-                          <Block width={ width * 0.8 }>
-                            <Input
-                              placeholder="Password"
-                              secureTextEntry={ true }
-                              style={ styles.inputs }
-                              iconContent={
-                                <Icon
-                                  size={ 16 }
-                                  color="#ADB5BD"
-                                  name="caps-small2x"
-                                  family="NowExtra"
-                                  style={ styles.inputIcons }
-                                />
-                              }
-                            />
-                          </Block>
-                          <Block
-                            style={ { marginVertical: theme.SIZES.BASE, marginLeft: 15 } }
-                            row
-                            width={ width * 0.75 }
-                          >
-                            <Checkbox
-                              checkboxStyle={ {
-                                borderWidth: 1,
-                                borderRadius: 2,
-                                borderColor: '#E3E3E3'
-                              } }
-                              color={ nowTheme.COLORS.PRIMARY }
-                              labelStyle={ {
-                                color: nowTheme.COLORS.HEADER,
-                                fontFamily: 'montserrat-regular'
-                              } }
-                              label="Yo acepto los terminos y condiciones."
-                            />
-                          </Block>
+                      />
+                    </Block> */}
+                </Block>
+                <Block flex={0.1} middle>
+                  <Text
+                    style={{
+                      fontFamily: 'montserrat-regular',
+                      textAlign: 'center'
+                    }}
+                    muted
+                    size={16}
+                  >
+                    o se Clasico
+                  </Text>
+                </Block>
+                <Block flex={1} middle space="between">
+                  <Block center flex={0.9}>
+                    <Block flex space="between">
+                      <Block>
+                        <Block width={width * 0.8} style={{ marginBottom: 5 }}>
+                          <Input
+                            placeholder="Nombre"
+                            style={styles.inputs}
+                            value={state.firstName}
+                            onChangeText={text =>
+                              setState({ ...state, firstName: text, name: text })
+                            }
+                            iconContent={
+                              <Icon
+                                size={16}
+                                color="#ADB5BD"
+                                name="profile-circle"
+                                family="NowExtra"
+                                style={styles.inputIcons}
+                              />
+                            }
+                          />
                         </Block>
-                        <Block center>
-                          <Button color="primary" round style={ styles.createButton }
-                            onPress={ () => { this._signInAsync() } }
-                          >
-                            <Text
-                              style={ { fontFamily: 'montserrat-bold' } }
-                              size={ 14 }
-                              color={ nowTheme.COLORS.WHITE }
-                            >
-                              A comenzar
-                            </Text>
-                          </Button>
+                        <Block width={width * 0.8} style={{ marginBottom: 5 }}>
+                          <Input
+                            placeholder="Apellido"
+                            style={styles.inputs}
+                            value={state.lastName}
+                            onChangeText={text =>
+                              setState({
+                                ...state,
+                                lastName: text,
+                                name: state.firstName + ' ' + text
+                              })
+                            }
+                            iconContent={
+                              <Icon
+                                size={16}
+                                color="#ADB5BD"
+                                name="profile-circle"
+                                family="NowExtra"
+                                style={styles.inputIcons}
+                              />
+                            }
+                          />
                         </Block>
+                        <Block width={width * 0.8}>
+                          <Input
+                            placeholder="Email"
+                            style={styles.inputs}
+                            value={state.email}
+                            onChangeText={text => setState({ ...state, email: text })}
+                            iconContent={
+                              <Icon
+                                size={16}
+                                color="#ADB5BD"
+                                name="email-852x"
+                                family="NowExtra"
+                                style={styles.inputIcons}
+                              />
+                            }
+                          />
+                        </Block>
+                        <Block width={width * 0.8}>
+                          <Input
+                            placeholder="Password"
+                            secureTextEntry={true}
+                            style={styles.inputs}
+                            value={state.password}
+                            onChangeText={text => setState({ ...state, password: text })}
+                            iconContent={
+                              <Icon
+                                size={16}
+                                color="#ADB5BD"
+                                name="caps-small2x"
+                                family="NowExtra"
+                                style={styles.inputIcons}
+                              />
+                            }
+                          />
+                        </Block>
+                        <Block
+                          style={{ marginVertical: theme.SIZES.BASE, marginLeft: 15 }}
+                          row
+                          width={width * 0.75}
+                        >
+                          <Checkbox
+                            checkboxStyle={{
+                              borderWidth: 1,
+                              borderRadius: 2,
+                              borderColor: '#E3E3E3'
+                            }}
+                            color={nowTheme.COLORS.PRIMARY}
+                            labelStyle={{
+                              color: nowTheme.COLORS.HEADER,
+                              fontFamily: 'montserrat-regular'
+                            }}
+                            label="Yo acepto los terminos y condiciones."
+                          />
+                        </Block>
+                      </Block>
+                      <Block center>
+                        <Button
+                          color="primary"
+                          round
+                          style={styles.createButton}
+                          onPress={() => {
+                            this._signInAsync();
+                          }}
+                        >
+                          <Text
+                            style={{ fontFamily: 'montserrat-bold' }}
+                            size={14}
+                            color={nowTheme.COLORS.WHITE}
+                          >
+                            A comenzar
+                          </Text>
+                        </Button>
                       </Block>
                     </Block>
                   </Block>
                 </Block>
               </Block>
             </Block>
-          </ImageBackground>
-        </Block>
-      </DismissKeyboard>
-    );
-  }
+          </Block>
+        </ImageBackground>
+      </Block>
+    </DismissKeyboard>
+  );
 }
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
   imageBackgroundContainer: {
     width: width,
     height: height,
@@ -298,6 +342,4 @@ const styles = StyleSheet.create( {
     justifyContent: 'center',
     marginHorizontal: 10
   }
-} );
-
-export default Register;
+});
