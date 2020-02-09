@@ -13,16 +13,9 @@ export default function ControlGanadero(props) {
   const [isLoading, setisLoading] = React.useState(false);
   const [isInit, setisInit] = React.useState(true);
   const [animals, setAnimals] = React.useState([]);
-  /**
-   * {
-    title: 'Pink is obviously a better color',
-    image: require("../assets/imgs/project21.jpg"),
-    cta: 'View article'
-  }
-   */
-  searchAnimal = async () => {
+  searchAnimal = async text => {
     setisLoading(true);
-    ControlGanaderoController.searchAnimal()
+    ControlGanaderoController.searchAnimal(text)
       .then(animallin => {
         console.log('animallin', animallin);
         var anl = animallin.map(animal => {
@@ -37,6 +30,7 @@ export default function ControlGanadero(props) {
       })
       .catch(error => {
         console.log('error', error);
+        setisLoading(false);
       });
   };
   React.useEffect(() => {
@@ -47,7 +41,13 @@ export default function ControlGanadero(props) {
   });
   return (
     <>
-      <Header search title="Control Ganadero" navigation={props.navigation} />
+      <Header
+        search
+        searchAction={searchAnimal}
+        searchPlaceholder={'Buscar Animal'}
+        title="Control Ganadero"
+        navigation={props.navigation}
+      />
       <Block flex center style={styles.home}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.articles}>
           <Block flex>

@@ -1,11 +1,14 @@
 import { Animal, Form, AnimalHasForm } from '../models';
 
 export default class ControlGanadero {
-  static async searchAnimal() {
+  static async searchAnimal(text) {
+    if (text == undefined) {
+      text = '%';
+    }
     const options = {
       columns: '*',
       where: {
-        id_gt: 0
+        name_cont: text
       },
       page: 1,
       limit: 30,
