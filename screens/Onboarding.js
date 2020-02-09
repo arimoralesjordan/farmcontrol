@@ -10,12 +10,11 @@ import {
 } from 'react-native';
 import { Block, Button, Text, theme } from 'galio-framework';
 import { Animal, Form, AnimalHasForm } from '../models';
-import * as SQLite from 'expo-sqlite';
 
 const { height, width } = Dimensions.get('screen');
 import { Images, nowTheme } from '../constants/';
 import { HeaderHeight } from '../constants/utils';
-import ControlGanadero from '../controllers/ControlGanadero';
+import ControlGanaderoController from '../controllers/ControlGanaderoController';
 
 export default function Onboarding(props) {
   const [userToken, setUserToken] = React.useState(null);
@@ -24,14 +23,11 @@ export default function Onboarding(props) {
   };
   React.useEffect(effect => {
     if (userToken) {
-      props.navigation.navigate('Home');
-    } else {
-      // ControlGanadero._init();
+      props.navigation.navigate('ControlGanaderoStack');
     }
   });
   _initDb = async () => {
-    //Form.createTable();
-    ControlGanadero._reset().then(() => {
+    ControlGanaderoController._reset().then(() => {
       Animal.create({
         name: 'Kristi ' + Date.now(),
         other_attribute: {
@@ -57,7 +53,7 @@ export default function Onboarding(props) {
       Animal.query(options).then(r => {
         console.log('r', r);
       });
-      ControlGanadero.createDemoData();
+      ControlGanaderoController.createDemoData();
     });
   };
   const { navigation } = props;

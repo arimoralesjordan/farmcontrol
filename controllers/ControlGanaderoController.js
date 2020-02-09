@@ -1,7 +1,18 @@
 import { Animal, Form, AnimalHasForm } from '../models';
-import { AnimalDemo } from '../constants/Images';
 
 export default class ControlGanadero {
+  static async searchAnimal() {
+    const options = {
+      columns: '*',
+      where: {
+        id_gt: 0
+      },
+      page: 1,
+      limit: 30,
+      order: 'name ASC'
+    };
+    return Animal.query(options);
+  }
   static async _init() {
     return Animal.createTable().then(() => {
       return Form.createTable().then(() => {
@@ -30,7 +41,7 @@ export default class ControlGanadero {
         color: 'white',
         race: 'Puddle',
         type: 'Dog',
-        image: AnimalDemo
+        image: require('../assets/imgs/animal_demo.jpg')
       },
       father_id: null,
       mother_id: null,
@@ -45,7 +56,7 @@ export default class ControlGanadero {
           color: 'white',
           race: 'Puddle',
           type: 'Dog',
-          image: AnimalDemo
+          image: require('../assets/imgs/animal_demo.jpg')
         },
         father_id: null,
         mother_id: null,
@@ -60,7 +71,7 @@ export default class ControlGanadero {
             color: 'white',
             race: 'Puddle',
             type: 'Dog',
-            image: AnimalDemo
+            image: require('../assets/imgs/animal_demo.jpg')
           },
           father_id: 1,
           mother_id: 2,
@@ -75,7 +86,7 @@ export default class ControlGanadero {
               color: 'white',
               race: 'Puddle',
               type: 'Dog',
-              image: AnimalDemo
+              image: require('../assets/imgs/animal_demo.jpg')
             },
             father_id: 1,
             mother_id: 2,
@@ -90,7 +101,7 @@ export default class ControlGanadero {
                 color: 'white',
                 race: 'Puddle',
                 type: 'Dog',
-                image: AnimalDemo
+                image: require('../assets/imgs/animal_demo.jpg')
               },
               father_id: 1,
               mother_id: 2,

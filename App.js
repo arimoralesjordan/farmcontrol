@@ -24,57 +24,52 @@ const assetImages = [
 ];
 
 // cache product images
-articles.map( article => assetImages.push( article.image ) );
+articles.map(article => assetImages.push(article.image));
 
-function cacheImages ( images )
-{
-  return images.map( image =>
-  {
-    if ( typeof image === 'string' )
-    {
-      return Image.prefetch( image );
-    } else
-    {
-      return Asset.fromModule( image ).downloadAsync();
+function cacheImages(images) {
+  return images.map(image => {
+    if (typeof image === 'string') {
+      return Image.prefetch(image);
+    } else {
+      return Asset.fromModule(image).downloadAsync();
     }
-  } );
+  });
 }
 
-export default class App extends React.Component
-{
+export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
     fontLoaded: false
   };
 
-  componentDidMount ()
-  {
-    // Font.loadAsync( {
-    //   'montserrat-regular': require( './assets/font/Montserrat-Regular.ttf' ),
-    //   'montserrat-bold': require( './assets/font/Montserrat-Bold.ttf' )
-    // }, () =>
-    // {
-    //   this.setState( { fontLoaded: true } )
-    // } );
-    //this.setState( { fontLoaded: true } );
+  componentDidMount() {
+    Font.loadAsync(
+      {
+        'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
+        'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
+      },
+      () => {
+        this.setState({ fontLoaded: true });
+      }
+    );
+    this.setState({ fontLoaded: true });
   }
 
-  _cacheResourcesAsync = () =>
-  {
-    this.setState( { fontLoaded: true } )
-    return Font.loadAsync( {
-      'montserrat-regular': require( './assets/font/Montserrat-Regular.ttf' ),
-      'montserrat-bold': require( './assets/font/Montserrat-Bold.ttf' )
-    }, () =>
-    {
-      this.setState( { fontLoaded: true } )
-    } );
-  }
+  _cacheResourcesAsync = () => {
+    this.setState({ fontLoaded: true });
+    return Font.loadAsync(
+      {
+        'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
+        'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
+      },
+      () => {
+        this.setState({ fontLoaded: true });
+      }
+    );
+  };
 
-  render ()
-  {
-    if ( !this.state.isLoadingComplete )
-    {
+  render() {
+    if (!this.state.isLoadingComplete) {
       return (
         <AppLoading
           startAsync={this._cacheResourcesAsync}
@@ -82,35 +77,34 @@ export default class App extends React.Component
           onFinish={this._handleFinishLoading}
         />
       );
-    } else
-    {
+    } else {
       return (
         <GalioProvider theme={nowTheme}>
           <Block flex>
-            <Screens />
+            <Screens
+              appIsLoadgin={(Complete = false) => {
+                this.setState({ ...this.state, isLoadingComplete: Complete });
+              }}
+            />
           </Block>
         </GalioProvider>
       );
     }
   }
 
-  _loadResourcesAsync = async () =>
-  {
-    return Promise.all( [ ..._cacheResourcesAsync(), cacheImages( assetImages ) ] );
+  _loadResourcesAsync = async () => {
+    return Promise.all([..._cacheResourcesAsync(), cacheImages(assetImages)]);
   };
 
-  _handleLoadingError = error =>
-  {
+  _handleLoadingError = error => {
     // In this case, you might want to report the error to your error
     // reporting service, for example Sentry
     //console.warn( 'Warn', error );
   };
 
-  _handleFinishLoading = () =>
-  {
-    if ( this.state.fontLoaded )
-    {
-      this.setState( { isLoadingComplete: true } );
+  _handleFinishLoading = () => {
+    if (this.state.fontLoaded) {
+      this.setState({ isLoadingComplete: true });
     }
   };
 }

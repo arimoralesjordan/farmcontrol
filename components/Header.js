@@ -23,7 +23,10 @@ const BellButton = ({ isWhite, style, navigation }) => (
       name="bulb"
       color={nowTheme.COLORS[isWhite ? 'WHITE' : 'ICON']}
     />
-    <Block middle style={[styles.notify, { backgroundColor: nowTheme.COLORS[isWhite ? 'WHITE' : 'PRIMARY'] }]} />
+    <Block
+      middle
+      style={[styles.notify, { backgroundColor: nowTheme.COLORS[isWhite ? 'WHITE' : 'PRIMARY'] }]}
+    />
   </TouchableOpacity>
 );
 
@@ -37,8 +40,6 @@ const BasketButton = ({ isWhite, style, navigation }) => (
     />
   </TouchableOpacity>
 );
-
-
 
 class Header extends React.Component {
   handleLeftPress = () => {
@@ -107,13 +108,19 @@ class Header extends React.Component {
     }
   };
   renderSearch = () => {
-    const { navigation } = this.props;
+    const { navigation, searchAction, searchPlaceholder } = this.props;
+    var inputPlaceholder = searchPlaceholder ? searchPlaceholder : 'Buscas Algo?';
     return (
       <Input
         right
         color="black"
         style={styles.search}
-        placeholder="What are you looking for?"
+        placeholder={inputPlaceholder}
+        onChangeText={text => {
+          if (typeof searchAction != 'undefined') {
+            searchAction(text);
+          }
+        }}
         placeholderTextColor={'#8898AA'}
         onFocus={() => navigation.navigate('Search')}
         iconContent={
@@ -313,7 +320,7 @@ const styles = StyleSheet.create({
     height: theme.SIZES.BASE * 3.5,
     borderRadius: theme.SIZES.BASE * 1.75,
     justifyContent: 'center'
-  },
+  }
 });
 
 export default withNavigation(Header);

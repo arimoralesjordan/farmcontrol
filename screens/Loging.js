@@ -29,31 +29,31 @@ export default function Register(props) {
     email: '',
     password: ''
   });
-  console.log('backend.url', backend.url);
   const [isLoading, setisLoading] = React.useState(false);
 
-  _signInAsync = async () => {
-    setisLoading(true);
-    fetch(backend.url + '/api/register', {
+  _meAsync = async () => {
+    fetch(backend.url + '/api/me', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(state)
+      body: JSON.stringify({})
     })
       .then(response => {
         return response.json();
       })
       .then(async responseJson => {
         await AsyncStorage.setItem('userData', JSON.stringify(responseJson));
-        _logInAsync();
+        setisLoading(false);
+        props.navigation.navigate('ControlGanaderoStack');
       })
       .catch(error => {
         console.error(error);
       });
   };
   _logInAsync = async () => {
+    setisLoading(true);
     fetch(backend.url + '/oauth/token', {
       method: 'POST',
       headers: {
@@ -74,8 +74,7 @@ export default function Register(props) {
       })
       .then(async responseJson => {
         await AsyncStorage.setItem('userToken', JSON.stringify(responseJson));
-        setisLoading(false);
-        props.navigation.navigate('ControlGanaderoStack');
+        _meAsync();
       })
       .catch(error => {
         console.error(error);
@@ -92,6 +91,11 @@ export default function Register(props) {
         >
           <Block flex middle>
             <Block style={styles.registerContainer}>
+              {isLoading && (
+                <View style={styles.loading}>
+                  <ActivityIndicator size="large" />
+                </View>
+              )}
               <Block flex space="evenly">
                 <Block flex={0.4} middle style={styles.socialConnect}>
                   <Block flex={1} middle space="between">
@@ -103,7 +107,7 @@ export default function Register(props) {
                             round
                             style={styles.createButton}
                             onPress={() => {
-                              props.navigation.navigate('LogingStack');
+                              props.navigation.navigate('RegisterStack');
                             }}
                           >
                             <Text
@@ -111,7 +115,7 @@ export default function Register(props) {
                               size={14}
                               color={nowTheme.COLORS.WHITE}
                             >
-                              Ya Tienes Cuenta
+                              O Registrate
                             </Text>
                           </Button>
                         </Block>
@@ -127,7 +131,7 @@ export default function Register(props) {
                       color="#333"
                       size={24}
                     >
-                      Registrate
+                      Inicia Session
                     </Text>
                   </Block>
 
@@ -157,64 +161,10 @@ export default function Register(props) {
                       />
                     </Block> */}
                 </Block>
-                {/* <Block flex={0.1} middle>
-                  <Text
-                    style={{
-                      fontFamily: 'montserrat-regular',
-                      textAlign: 'center'
-                    }}
-                    muted
-                    size={16}
-                  >
-                    o se Clasico
-                  </Text>
-                </Block> */}
                 <Block flex={1} middle space="between">
                   <Block center flex={0.9}>
                     <Block flex space="between">
                       <Block>
-                        <Block width={width * 0.8} style={{ marginBottom: 5 }}>
-                          <Input
-                            placeholder="Nombre"
-                            style={styles.inputs}
-                            value={state.firstName}
-                            onChangeText={text =>
-                              setState({ ...state, firstName: text, name: text })
-                            }
-                            iconContent={
-                              <Icon
-                                size={16}
-                                color="#ADB5BD"
-                                name="profile-circle"
-                                family="NowExtra"
-                                style={styles.inputIcons}
-                              />
-                            }
-                          />
-                        </Block>
-                        <Block width={width * 0.8} style={{ marginBottom: 5 }}>
-                          <Input
-                            placeholder="Apellido"
-                            style={styles.inputs}
-                            value={state.lastName}
-                            onChangeText={text =>
-                              setState({
-                                ...state,
-                                lastName: text,
-                                name: state.firstName + ' ' + text
-                              })
-                            }
-                            iconContent={
-                              <Icon
-                                size={16}
-                                color="#ADB5BD"
-                                name="profile-circle"
-                                family="NowExtra"
-                                style={styles.inputIcons}
-                              />
-                            }
-                          />
-                        </Block>
                         <Block width={width * 0.8}>
                           <Input
                             placeholder="Email"
@@ -250,25 +200,6 @@ export default function Register(props) {
                             }
                           />
                         </Block>
-                        <Block
-                          style={{ marginVertical: theme.SIZES.BASE, marginLeft: 15 }}
-                          row
-                          width={width * 0.75}
-                        >
-                          <Checkbox
-                            checkboxStyle={{
-                              borderWidth: 1,
-                              borderRadius: 2,
-                              borderColor: '#E3E3E3'
-                            }}
-                            color={nowTheme.COLORS.PRIMARY}
-                            labelStyle={{
-                              color: nowTheme.COLORS.HEADER,
-                              fontFamily: 'montserrat-regular'
-                            }}
-                            label="Yo acepto los terminos y condiciones."
-                          />
-                        </Block>
                       </Block>
                       <Block center>
                         <Button
@@ -276,7 +207,7 @@ export default function Register(props) {
                           round
                           style={styles.createButton}
                           onPress={() => {
-                            this._signInAsync();
+                            this._logInAsync();
                           }}
                         >
                           <Text
@@ -284,7 +215,7 @@ export default function Register(props) {
                             size={14}
                             color={nowTheme.COLORS.WHITE}
                           >
-                            A comenzar
+                            Inicia Session
                           </Text>
                         </Button>
                       </Block>
@@ -292,11 +223,6 @@ export default function Register(props) {
                   </Block>
                 </Block>
               </Block>
-              {isLoading && (
-                <View style={styles.loading}>
-                  <ActivityIndicator size="large" />
-                </View>
-              )}
             </Block>
           </Block>
         </ImageBackground>

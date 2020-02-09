@@ -1,4 +1,5 @@
 import { backendUrl } from 'react-native-dotenv';
 export default {
-  url: 'http://192.168.1.15:8000'
+  url: 'http://ec2-18-236-165-69.us-west-2.compute.amazonaws.com',
+  token: 'FVKkOYnreCFeWhZBN6IU3KxvQF2CC0VaFeYoUnWl'
 };
