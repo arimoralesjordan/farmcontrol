@@ -160,9 +160,18 @@ export default class ControlGanadero {
     AnimalHasForm.dropTable();
   }
 
-  async registerAnimal(animal) {
-    var animal = Animal.create(animal);
-    return animal;
+  static async _createAnimal(animal) {
+    return Animal.create({
+      name: animal.name,
+      other_attribute: {
+        image: animal.image
+      },
+      father_id: animal.father.id,
+      mother_id: animal.mother.id,
+      uid: Date.now(),
+      birthdate: animal.birthdate,
+      timestamp: Date.now()
+    });
   }
 
   async registerForm(form) {

@@ -40,6 +40,21 @@ const BasketButton = ({ isWhite, style, navigation }) => (
     />
   </TouchableOpacity>
 );
+const AddButton = ({ isWhite, style, navigation, innerOnPress }) => (
+  <TouchableOpacity
+    style={[styles.button, style]}
+    onPress={() => {
+      innerOnPress();
+    }}
+  >
+    <Icon
+      family="NowExtra"
+      size={16}
+      name="simple-add2x"
+      color={nowTheme.COLORS[isWhite ? 'WHITE' : 'ICON']}
+    />
+  </TouchableOpacity>
+);
 
 class Header extends React.Component {
   handleLeftPress = () => {
@@ -56,7 +71,7 @@ class Header extends React.Component {
         <BasketButton key="basket-title" navigation={navigation} isWhite={white} />
       ];
     }
-
+    console.log('routeName', routeName);
     switch (routeName) {
       case 'Home':
         return [
@@ -97,6 +112,19 @@ class Header extends React.Component {
         return [
           <BellButton key="chat-search" navigation={navigation} isWhite={white} />,
           <BasketButton key="basket-search" navigation={navigation} isWhite={white} />
+        ];
+      case 'ControlGanadero':
+        var rightOnPress = () => {};
+        if (typeof this.props.rightOnPress != undefined) {
+          rightOnPress = this.props.rightOnPress;
+        }
+        return [
+          <AddButton
+            key="simple-add"
+            innerOnPress={rightOnPress}
+            navigation={navigation}
+            isWhite={white}
+          />
         ];
       case 'Settings':
         return [
@@ -190,7 +218,7 @@ class Header extends React.Component {
       return (
         <Block center>
           {search ? this.renderSearch() : null}
-          {options ? this.renderOptions() : null}
+          {options ? options : null}
           {tabs ? this.renderTabs() : null}
         </Block>
       );

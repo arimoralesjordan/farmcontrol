@@ -1,10 +1,13 @@
 {
   "expo": {
-    "name": "Now UI React Native",
-    "slug": "now-ui-react-native",
+    "name": "FarmControl",
+    "slug": "FarmControl",
     "privacy": "public",
     "sdkVersion": "35.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,12 +19,17 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "packagerOpts": {
-      "assetExts": ["ttf"]
-    }
+      "assetExts": [
+        "ttf"
+      ]
+    },
+    "description": "Farm Control"
   }
 }

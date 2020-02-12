@@ -14,6 +14,7 @@ import Components from '../screens/Components';
 import Articles from '../screens/Articles';
 import Onboarding from '../screens/Onboarding';
 import ControlGanadero from '../screens/ControlGanadero';
+import AnimalForm from '../screens/AnimalForm';
 
 // settings
 import SettingsScreen from '../screens/Settings';
@@ -85,6 +86,22 @@ const ControlGanaderoStack = createStackNavigator(
       screen: ControlGanadero,
       navigationOptions: ({ navigation }) => ({
         header: null
+      })
+    }
+  },
+  {
+    cardStyle: {
+      backgroundColor: '#FFFFFF'
+    },
+    transitionConfig
+  }
+);
+const AnimalFormStack = createStackNavigator(
+  {
+    AnimalForm: {
+      screen: AnimalForm,
+      navigationOptions: ({ navigation }) => ({
+        header: <Header title="Registro de Animal" navigation={navigation} />
       })
     }
   },
@@ -208,12 +225,6 @@ const AppStack = createDrawerNavigator(
         drawerLabel: () => {}
       }
     },
-    Home: {
-      screen: HomeStack,
-      navigationOptions: navOpt => ({
-        drawerLabel: ({ focused }) => <DrawerItem focused={focused} title="Home" />
-      })
-    },
     ControlGanaderoStack: {
       screen: ControlGanaderoStack,
       navigationOptions: navOpt => ({
@@ -222,6 +233,21 @@ const AppStack = createDrawerNavigator(
         )
       })
     },
+    AnimalFormStack: {
+      screen: AnimalFormStack,
+      navigationOptions: navOpt => ({
+        drawerLabel: ({ focused }) => (
+          <DrawerItem focused={focused} screen="Control Ganadero" title="Control Ganadero" />
+        )
+      })
+    },
+    Home: {
+      screen: HomeStack,
+      navigationOptions: navOpt => ({
+        drawerLabel: ({ focused }) => <DrawerItem focused={focused} title="Home" />
+      })
+    },
+
     SettingStack: {
       screen: SettingsStack,
       navigationOptions: navOpt => ({

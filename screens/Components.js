@@ -20,7 +20,6 @@ import { Button, Select, Icon, Input, Header, Switch } from '../components';
 import Img from '../components/Img';
 import { Card } from '../components';
 
-
 const { width } = Dimensions.get('screen');
 
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -31,11 +30,9 @@ class Components extends React.Component {
     this.state = {
       checkSelected: [],
       'switch-1': true,
-      'switch-2': false,
+      'switch-2': false
     };
   }
-
-
 
   toggleSwitch = switchId => this.setState({ [switchId]: !this.state[switchId] });
 
@@ -56,7 +53,8 @@ class Components extends React.Component {
             </Button>
           </Block>
           <Block center>
-            <Button textStyle={{ fontFamily: 'montserrat-regular', fontSize: 12 }}
+            <Button
+              textStyle={{ fontFamily: 'montserrat-regular', fontSize: 12 }}
               style={styles.button}
             >
               PRIMARY
@@ -71,7 +69,6 @@ class Components extends React.Component {
               INFO
             </Button>
           </Block>
-
 
           <Block center>
             <Button
@@ -102,7 +99,11 @@ class Components extends React.Component {
           </Block>
           <Block center>
             <Button
-              textStyle={{ fontFamily: 'montserrat-regular', color: nowTheme.COLORS.PRIMARY, fontSize: 12 }}
+              textStyle={{
+                fontFamily: 'montserrat-regular',
+                color: nowTheme.COLORS.PRIMARY,
+                fontSize: 12
+              }}
               color="neutral"
               style={styles.button}
             >
@@ -232,8 +233,6 @@ class Components extends React.Component {
     );
   };
 
-
-
   renderInputs = () => {
     return (
       <Block flex style={styles.group}>
@@ -245,8 +244,8 @@ class Components extends React.Component {
             primary={this.state.primaryFocus}
             right
             placeholder="Regular"
-            onFocus = {() => this.setState({primaryFocus: true})}
-            onBlur = {() => this.setState({primaryFocus: false})}
+            onFocus={() => this.setState({ primaryFocus: true })}
+            onBlur={() => this.setState({ primaryFocus: false })}
             iconContent={<Block />}
             shadowless
           />
@@ -257,8 +256,8 @@ class Components extends React.Component {
             right
             shadowless
             placeholder="Success"
-            onFocus = {() => this.setState({successFocus: true})}
-            onBlur = {() => this.setState({successFocus: false})}
+            onFocus={() => this.setState({ successFocus: true })}
+            onBlur={() => this.setState({ successFocus: false })}
             iconContent={
               <Icon size={11} color={nowTheme.COLORS.SUCCESS} name="check-22x" family="NowExtra" />
             }
@@ -270,8 +269,8 @@ class Components extends React.Component {
             right
             shadowless
             placeholder="Error Input"
-            onFocus = {() => this.setState({errorFocus: true})}
-            onBlur = {() => this.setState({errorFocus: false})}
+            onFocus={() => this.setState({ errorFocus: true })}
+            onBlur={() => this.setState({ errorFocus: false })}
             iconContent={
               <Icon
                 size={11}
@@ -391,7 +390,7 @@ class Components extends React.Component {
           <Block style={{ marginBottom: theme.SIZES.BASE }}>
             <Header
               back
-              title="Title"
+              title="Title2"
               navigation={this.props.navigation}
               bgColor={nowTheme.COLORS.ACTIVE}
               titleColor="white"
@@ -401,29 +400,27 @@ class Components extends React.Component {
           </Block>
 
           <Block style={{ marginBottom: theme.SIZES.BASE }}>
-            <Header tabs={tabs.beauty} title="Title" navigation={this.props.navigation} />
+            <Header tabs={tabs.beauty} title="Title3" navigation={this.props.navigation} />
           </Block>
 
           <Block style={{ marginBottom: theme.SIZES.BASE }}>
-            <Header search title="Title" navigation={this.props.navigation} />
+            <Header search title="Title4" navigation={this.props.navigation} />
           </Block>
 
           <Block style={{ marginBottom: theme.SIZES.BASE }}>
             <Header
               options
               search
-              title="Title"
+              title="Title5"
               optionLeft="Option 1"
               optionRight="Option 2"
               navigation={this.props.navigation}
             />
           </Block>
-
         </Block>
       </Block>
     );
   };
-
 
   renderSocial = () => {
     return (
@@ -478,21 +475,16 @@ class Components extends React.Component {
     );
   };
 
-
   renderCards = () => {
     scrollX = new Animated.Value(0);
-    cards = [articles[5], articles[6]]
+    cards = [articles[5], articles[6]];
     return (
       <Block flex style={styles.group}>
-
         <Articles />
         <Block flex card center shadow style={styles.category}>
           <ImageBackground
             source={Images.Products['path']}
-            style={[
-              styles.imageBlock,
-              { width: width - theme.SIZES.BASE * 2, height: 252 }
-            ]}
+            style={[styles.imageBlock, { width: width - theme.SIZES.BASE * 2, height: 252 }]}
             imageStyle={{
               width: width - theme.SIZES.BASE * 2,
               height: 252
@@ -511,19 +503,24 @@ class Components extends React.Component {
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
-          onScroll={Animated.event([
-            { nativeEvent: { contentOffset: { x: this.scrollX } } },
-          ])}
+          onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollX } } }])}
           contentContainerStyle={{
             width: width * 2
-          }}>
+          }}
+        >
           {cards.map((item, index) => {
-            return <Card key={index} item={item} full titleStyle={styles.productTitle} imageStyle={ { height: 300, width: '100%', resizeMode: 'contain' } }/>
+            return (
+              <Card
+                key={index}
+                item={item}
+                full
+                titleStyle={styles.productTitle}
+                imageStyle={{ height: 300, width: '100%', resizeMode: 'contain' }}
+              />
+            );
           })}
         </ScrollView>
-
       </Block>
-
     );
   };
   renderAlbums = () => {
@@ -536,7 +533,11 @@ class Components extends React.Component {
             <Text bold size={16} color="#333" style={{ marginTop: 3 }}>
               Album
             </Text>
-            <Button small color="transparent" textStyle={{ color: nowTheme.COLORS.PRIMARY, fontSize: 14 }}>
+            <Button
+              small
+              color="transparent"
+              textStyle={{ color: nowTheme.COLORS.PRIMARY, fontSize: 14 }}
+            >
               View All
             </Button>
           </Block>
@@ -600,7 +601,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: theme.SIZES.BASE,
-    width: width - theme.SIZES.BASE * 2,
+    width: width - theme.SIZES.BASE * 2
   },
   optionsButton: {
     width: 'auto',
@@ -618,7 +619,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.SIZES.BASE,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   imageBlock: {
     overflow: 'hidden',
