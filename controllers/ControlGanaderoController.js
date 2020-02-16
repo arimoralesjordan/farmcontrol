@@ -2,7 +2,7 @@ import { Animal, Form, AnimalHasForm } from '../models';
 
 export default class ControlGanadero {
   static async searchAnimal(text) {
-    if (text == undefined) {
+    if (text == undefined || text == '') {
       text = '%';
     }
     const options = {
@@ -158,20 +158,6 @@ export default class ControlGanadero {
     Animal.dropTable();
     Form.dropTable();
     AnimalHasForm.dropTable();
-  }
-
-  static async _createAnimal(animal) {
-    return Animal.create({
-      name: animal.name,
-      other_attribute: {
-        image: animal.image
-      },
-      father_id: animal.father.id,
-      mother_id: animal.mother.id,
-      uid: Date.now(),
-      birthdate: animal.birthdate,
-      timestamp: Date.now()
-    });
   }
 
   async registerForm(form) {

@@ -11,8 +11,10 @@ import {
   ActivityIndicator,
   Picker,
   Platform,
-  Image
+  Image,
+  ScrollView
 } from 'react-native';
+import moment from 'moment';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
 import { Button, Icon, Input, Select } from '../components';
 import { Images, nowTheme, backend } from '../constants';
@@ -23,20 +25,22 @@ import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { Animal, Form, AnimalHasForm } from '../models';
 const { width, height } = Dimensions.get('screen');
+import { Ionicons } from '@expo/vector-icons';
+import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
 );
-
-export default function Register(props) {
-  const [state, setState] = React.useState({
-    name: '',
-    father: null,
-    mother: null,
-    birthdate: new Date(),
-    image: false
-  });
-  console.log('backend.url', backend.url);
+const initAnimal = {
+  name: '',
+  father_id: '',
+  mother_id: '',
+  birthdate: moment().format('YYYY-MM-DD'),
+  other_attribute: { image: null }
+};
+export default function AnimalForm(props) {
+  //console.log('AnimalForm.props.state.params', props.navigation.state.params);
+  const [state, setState] = React.useState(initAnimal);
   const [isLoading, setisLoading] = React.useState(false);
   const [isInit, setisInit] = React.useState(true);
   const [animals, setAnimals] = React.useState([]);
@@ -55,9 +59,8 @@ export default function Register(props) {
       aspect: [4, 3],
       quality: 1
     });
-    console.log(result);
     if (!result.cancelled) {
-      setState({ ...state, image: result.uri });
+      setState({ ...state, other_attribute: { ...state.other_attribute, image: result.uri } });
     }
   };
 
@@ -71,50 +74,41 @@ export default function Register(props) {
       .catch(error => {
         console.log('error', error);
         setisLoading(false);
+        setisInit(true);
       });
   };
   React.useEffect(() => {
     if (isInit) {
       setisInit(false);
       searchAnimal();
+      getPermissionAsync();
+    }
+    if (typeof props.navigation.state.params != 'undefined') {
+      props.navigation.state.params.animal.birthdate = new Date(); // moment(initAnimal.birthdate).toDate();
+      if (state.id != props.navigation.state.params.animal.id) {
+        setState(props.navigation.state.params.animal);
+      }
+    } else {
+      setState(initAnimal);
     }
   });
 
   SaveAnimal = async () => {
     setisLoading(true);
-    var animal = state;
-    await Animal.create({
-      name: animal.name,
-      other_attribute: {
-        image: animal.image
-      },
-      father_id: animal.father.id,
-      mother_id: animal.mother.id,
-      uid: Date.now(),
-      birthdate: animal.birthdate,
-      timestamp: Date.now()
-    })
+    Animal._createOrUpdate(state)
       .then(animal => {
-        console.log('New animal', animal);
-        props.navigation.navigate('ControlGanadero');
+        props.navigation.pop();
+        props.navigation.navigate('ControlGanadero', { reRender: true });
         setisLoading(false);
+        setState(initAnimal);
       })
       .catch(error => {
         console.log(error);
         setisLoading(false);
       });
-    // ControlGanaderoController._createAnimal(state)
-    //   .then(animal => {
-    //     console.log('New animal', animal);
-    //     props.navigation.navigate('ControlGanadero');
-    //     setisLoading(false);
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //     setisLoading(false);
-    //   });
   };
-
+  console.log('AnimalFormProps', state);
+  console.log("moment().format('YYYY-MM-DD')", moment().format('YYYY-MM-DD'));
   return (
     <DismissKeyboard>
       <Block flex middle>
@@ -128,125 +122,152 @@ export default function Register(props) {
               <Block flex space="evenly">
                 <Block flex={1} middle space="between">
                   <Block center flex={0.9}>
-                    <Block flex space="between">
-                      <Block>
-                        <Block width={width * 0.8} style={{ marginBottom: 5 }}>
-                          <Input
-                            placeholder="Nombre"
-                            style={styles.inputs}
-                            value={state.firstName}
-                            onChangeText={text => setState({ ...state, name: text })}
-                            iconContent={
-                              <Icon
-                                size={16}
-                                color="#ADB5BD"
-                                name="profile-circle"
-                                family="NowExtra"
-                                style={styles.inputIcons}
-                              />
-                            }
-                          />
-                        </Block>
-                        <Block width={width * 0.8} style={{ marginBottom: 5 }}>
-                          <Picker
-                            style={styles.inputs}
-                            selectedValue={state.father}
-                            onValueChange={(itemValue, itemIndex) =>
-                              setState({ ...state, father: itemValue })
-                            }
-                          >
-                            <Picker.Item label="Padre" value="null" />
-                            {animals.map((animal, index) => {
-                              return <Picker.Item key={index} label={animal.name} value={animal} />;
-                            })}
-                          </Picker>
-                        </Block>
-                        <Block width={width * 0.8}>
-                          <Picker
-                            style={styles.inputs}
-                            selectedValue={state.mother}
-                            onValueChange={(itemValue, itemIndex) =>
-                              setState({ ...state, mother: itemValue })
-                            }
-                          >
-                            <Picker.Item label="Madre" value="null" />
-                            {animals.map((animal, index) => {
-                              return <Picker.Item key={index} label={animal.name} value={animal} />;
-                            })}
-                          </Picker>
-                        </Block>
-                        <Block center width={width * 0.8}>
-                          <DatePicker
-                            style={{ width: 200 }}
-                            date={state.birthdate}
-                            mode="date"
-                            placeholder="Fecha de Nacimiento"
-                            format="YYYY-MM-DD"
-                            minDate="2016-05-01"
-                            maxDate={new Date()}
-                            confirmBtnText="Confirm"
-                            cancelBtnText="Cancel"
-                            customStyles={{
-                              dateIcon: {
-                                position: 'absolute',
-                                left: 0,
-                                top: 4,
-                                marginLeft: 0
-                              },
-                              dateInput: {
-                                marginLeft: 36
+                    <ScrollView
+                      showsVerticalScrollIndicator={false}
+                      contentContainerStyle={styles.articles}
+                    >
+                      <Block flex space="between">
+                        <Block>
+                          <Block width={width * 0.8} style={{ marginBottom: 5 }}>
+                            <Input
+                              placeholder="Nombre"
+                              style={styles.inputs}
+                              value={state.name}
+                              onChangeText={text => setState({ ...state, name: text })}
+                              iconContent={
+                                <Icon
+                                  size={16}
+                                  color="#ADB5BD"
+                                  name="profile-circle"
+                                  family="NowExtra"
+                                  style={styles.inputIcons}
+                                />
                               }
-                              // ... You can check the source to find the other keys.
-                            }}
-                            onDateChange={date => {
-                              setState({ ...state, birthdate: date });
-                            }}
-                          />
+                            />
+                          </Block>
+                          <Block width={width * 0.8} style={{ marginBottom: 5 }}>
+                            <RNPickerSelect
+                              placeholder={{
+                                label: 'Padre...',
+                                value: null,
+                                color: '#9EA0A4'
+                              }}
+                              items={animals.map((animal, index) => {
+                                return { label: animal.name, value: animal.id };
+                              })}
+                              onValueChange={value => setState({ ...state, father_id: value })}
+                              style={{
+                                ...pickerSelectStyles,
+                                iconContainer: {
+                                  top: 10,
+                                  right: 12
+                                }
+                              }}
+                              value={state.father_id}
+                              useNativeAndroidPickerStyle={false}
+                              textInputProps={{ underlineColor: 'yellow' }}
+                              Icon={() => {
+                                return <Ionicons name="md-arrow-down" size={24} color="gray" />;
+                              }}
+                            />
+                          </Block>
+                          <Block width={width * 0.8} style={{ marginBottom: 5 }}>
+                            <RNPickerSelect
+                              placeholder={{
+                                label: 'Madre...',
+                                value: null,
+                                color: '#9EA0A4'
+                              }}
+                              items={animals.map((animal, index) => {
+                                return { label: animal.name, value: animal.id };
+                              })}
+                              onValueChange={value => setState({ ...state, mother_id: value })}
+                              style={{
+                                ...pickerSelectStyles,
+                                iconContainer: {
+                                  top: 10,
+                                  right: 12
+                                }
+                              }}
+                              value={state.mother_id}
+                              useNativeAndroidPickerStyle={false}
+                              textInputProps={{ underlineColor: 'yellow' }}
+                              Icon={() => {
+                                return <Ionicons name="md-arrow-down" size={24} color="gray" />;
+                              }}
+                            />
+                          </Block>
+                          <Block center width={width * 0.8}>
+                            <DatePicker
+                              style={{ width: 200 }}
+                              date={moment().format('YYYY-MM-DD')}
+                              mode="date"
+                              placeholder="Fecha de Nacimiento"
+                              format="YYYY-MM-DD"
+                              minDate="2016-05-01"
+                              maxDate={moment().format('YYYY-MM-DD')}
+                              confirmBtnText="Confirm"
+                              cancelBtnText="Cancel"
+                              customStyles={{
+                                dateIcon: {
+                                  position: 'absolute',
+                                  left: 0,
+                                  top: 4,
+                                  marginLeft: 0
+                                },
+                                dateInput: { marginLeft: 36 }
+                                // ... You can check the source to find the other keys.
+                              }}
+                              onDateChange={date => {
+                                setState({ ...state, birthdate: date });
+                              }}
+                            />
+                          </Block>
+                          <Block center>
+                            <Button
+                              color="primary"
+                              round
+                              style={styles.createButton}
+                              onPress={_pickImage}
+                            >
+                              <Text
+                                style={{ fontFamily: 'montserrat-bold' }}
+                                size={14}
+                                color={nowTheme.COLORS.WHITE}
+                              >
+                                Foto
+                              </Text>
+                            </Button>
+                          </Block>
+                        </Block>
+                        <Block center>
+                          {state.other_attribute.image != null && (
+                            <Image
+                              source={{ uri: state.other_attribute.image }}
+                              style={{ width: 200, height: 200 }}
+                            />
+                          )}
                         </Block>
                         <Block center>
                           <Button
                             color="primary"
                             round
                             style={styles.createButton}
-                            onPress={_pickImage}
+                            onPress={() => {
+                              SaveAnimal();
+                            }}
                           >
                             <Text
                               style={{ fontFamily: 'montserrat-bold' }}
                               size={14}
                               color={nowTheme.COLORS.WHITE}
                             >
-                              Foto
+                              Guardar
                             </Text>
                           </Button>
                         </Block>
                       </Block>
-                      <Block center>
-                        {state.image && (
-                          <Image
-                            source={{ uri: state.image }}
-                            style={{ width: 200, height: 200 }}
-                          />
-                        )}
-                      </Block>
-                      <Block center>
-                        <Button
-                          color="primary"
-                          round
-                          style={styles.createButton}
-                          onPress={() => {
-                            SaveAnimal();
-                          }}
-                        >
-                          <Text
-                            style={{ fontFamily: 'montserrat-bold' }}
-                            size={14}
-                            color={nowTheme.COLORS.WHITE}
-                          >
-                            Guardar
-                          </Text>
-                        </Button>
-                      </Block>
-                    </Block>
+                    </ScrollView>
                   </Block>
                 </Block>
               </Block>
@@ -262,6 +283,28 @@ export default function Register(props) {
     </DismissKeyboard>
   );
 }
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#E3E3E3',
+    borderRadius: 21.5,
+    color: 'black',
+    paddingRight: 30 // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: '#E3E3E3',
+    borderRadius: 21.5,
+    color: 'black',
+    paddingRight: 30 // to ensure the text is never behind the icon
+  }
+});
 
 const styles = StyleSheet.create({
   imageBackgroundContainer: {
@@ -286,7 +329,6 @@ const styles = StyleSheet.create({
     height: height
   },
   registerContainer: {
-    marginTop: 55,
     width: width * 0.9,
     height: height < 812 ? height * 0.8 : height * 0.8,
     backgroundColor: nowTheme.COLORS.WHITE,
@@ -301,29 +343,6 @@ const styles = StyleSheet.create({
     elevation: 1,
     overflow: 'hidden'
   },
-  socialConnect: {
-    backgroundColor: nowTheme.COLORS.WHITE
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderColor: "rgba(136, 152, 170, 0.3)"
-  },
-  socialButtons: {
-    width: 120,
-    height: 40,
-    backgroundColor: '#fff',
-    shadowColor: nowTheme.COLORS.BLACK,
-    shadowOffset: {
-      width: 0,
-      height: 4
-    },
-    shadowRadius: 8,
-    shadowOpacity: 0.1,
-    elevation: 1
-  },
-  socialTextButtons: {
-    color: nowTheme.COLORS.PRIMARY,
-    fontWeight: '800',
-    fontSize: 14
-  },
   inputIcons: {
     marginRight: 12,
     color: nowTheme.COLORS.ICON_INPUT
@@ -333,15 +352,20 @@ const styles = StyleSheet.create({
     borderColor: '#E3E3E3',
     borderRadius: 21.5
   },
-  passwordCheck: {
-    paddingLeft: 2,
-    paddingTop: 6,
-    paddingBottom: 15
+  picker: {
+    borderWidth: 1,
+    borderColor: '#E3E3E3',
+    borderRadius: 21.5,
+    height: 100,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#E3E3E3',
+    borderRadius: 21.5
   },
   createButton: {
     width: width * 0.5,
     marginTop: 25,
-    marginBottom: 40
+    marginBottom: 25
   },
   social: {
     width: theme.SIZES.BASE * 3.5,

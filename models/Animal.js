@@ -27,4 +27,13 @@ export default class Animal extends BaseModel {
       timestamp: { type: types.INTEGER, default: () => Date.now() }
     };
   }
+  static async _createOrUpdate(update) {
+    if (typeof update.id == 'undefined') {
+      console.log('Creating: ', update);
+      return Animal.create(update);
+    } else {
+      console.log('Updating: ', update);
+      return Animal.update(update);
+    }
+  }
 }

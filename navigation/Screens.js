@@ -237,7 +237,7 @@ const AppStack = createDrawerNavigator(
       screen: AnimalFormStack,
       navigationOptions: navOpt => ({
         drawerLabel: ({ focused }) => (
-          <DrawerItem focused={focused} screen="Control Ganadero" title="Control Ganadero" />
+          <DrawerItem focused={focused} screen="Animal Form" title="Animal Form" />
         )
       })
     },
