@@ -107,8 +107,12 @@ export default function AnimalForm(props) {
         setisLoading(false);
       });
   };
-  console.log('AnimalFormProps', state);
+  console.log('AnimalFormProps', typeof state.other_attribute.image);
   console.log("moment().format('YYYY-MM-DD')", moment().format('YYYY-MM-DD'));
+  var image = { uri: state.other_attribute.image };
+  if (typeof state.other_attribute.image == 'number') {
+    image = state.other_attribute.image;
+  }
   return (
     <DismissKeyboard>
       <Block flex middle>
@@ -242,10 +246,7 @@ export default function AnimalForm(props) {
                         </Block>
                         <Block center>
                           {state.other_attribute.image != null && (
-                            <Image
-                              source={{ uri: state.other_attribute.image }}
-                              style={{ width: 200, height: 200 }}
-                            />
+                            <Image source={image} style={{ width: 200, height: 200 }} />
                           )}
                         </Block>
                         <Block center>

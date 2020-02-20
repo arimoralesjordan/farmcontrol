@@ -15,6 +15,7 @@ import Articles from '../screens/Articles';
 import Onboarding from '../screens/Onboarding';
 import ControlGanadero from '../screens/ControlGanadero';
 import AnimalForm from '../screens/AnimalForm';
+import AnimalHistory from '../screens/AnimalHistory';
 
 // settings
 import SettingsScreen from '../screens/Settings';
@@ -87,21 +88,18 @@ const ControlGanaderoStack = createStackNavigator(
       navigationOptions: ({ navigation }) => ({
         header: null
       })
-    }
-  },
-  {
-    cardStyle: {
-      backgroundColor: '#FFFFFF'
     },
-    transitionConfig
-  }
-);
-const AnimalFormStack = createStackNavigator(
-  {
+    AnimalHistory: {
+      screen: AnimalHistory,
+      navigationOptions: ({ navigation }) => ({
+        header: null
+      })
+    },
     AnimalForm: {
       screen: AnimalForm,
       navigationOptions: ({ navigation }) => ({
-        header: <Header title="Registro de Animal" navigation={navigation} />
+        header: <Header left={<Block />} white transparent title="" navigation={navigation} />,
+        headerTransparent: true
       })
     }
   },
@@ -230,14 +228,6 @@ const AppStack = createDrawerNavigator(
       navigationOptions: navOpt => ({
         drawerLabel: ({ focused }) => (
           <DrawerItem focused={focused} screen="Control Ganadero" title="Control Ganadero" />
-        )
-      })
-    },
-    AnimalFormStack: {
-      screen: AnimalFormStack,
-      navigationOptions: navOpt => ({
-        drawerLabel: ({ focused }) => (
-          <DrawerItem focused={focused} screen="Animal Form" title="Animal Form" />
         )
       })
     },

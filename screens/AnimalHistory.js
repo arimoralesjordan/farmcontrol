@@ -10,15 +10,16 @@ import ControlGanaderoController from '../controllers/ControlGanaderoController'
 import Header from '../components/Header';
 import nowTheme from '../constants/Theme';
 
-export default function ControlGanadero(props) {
+export default function AnimalHistory(props) {
   const [isLoading, setisLoading] = React.useState(false);
   const [isInit, setisInit] = React.useState(true);
+  const [searchText, setSearchText] = React.useState('');
   const [animals, setAnimals] = React.useState([]);
   searchAnimal = async text => {
     setisLoading(true);
+    //setSearchText(text);
     ControlGanaderoController.searchAnimal(text)
       .then(animallin => {
-        console.log('animallin', animallin);
         var anl = animallin.map(animal => {
           var image = { uri: animal.other_attribute.image };
           if (typeof animal.other_attribute.image == 'number') {
@@ -26,6 +27,7 @@ export default function ControlGanadero(props) {
           }
           return {
             title: animal.name,
+            animal: animal,
             image: image,
             cta: 'Ver Historial'
           };
@@ -41,28 +43,25 @@ export default function ControlGanadero(props) {
   React.useEffect(() => {
     if (isInit) {
       setisInit(false);
-      searchAnimal();
+      //searchAnimal();
     }
   });
+  console.log('Redering Cosntrol Gandero', new Date());
   return (
     <>
       <Header
         search
         searchAction={searchAnimal}
-        searchPlaceholder={'Buscar Animal'}
-        title="Control Ganadero"
+        searchPlaceholder={'Buscar Historial'}
+        title="Hisorial"
         navigation={props.navigation}
         rightOnPress={() => {
-          props.navigation.navigate('AnimalForm');
+          //props.navigation.navigate('AnimalForm');
         }}
       />
       <Block flex center style={styles.home}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.articles}>
-          <Block flex>
-            {animals.map((animal, index) => {
-              return <AnimalCard key={index} item={animal} horizontal />;
-            })}
-          </Block>
+          <Block flex></Block>
         </ScrollView>
       </Block>
       {isLoading && (

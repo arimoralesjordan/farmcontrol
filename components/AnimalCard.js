@@ -37,7 +37,7 @@ class Card extends React.Component {
           </Block>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback
-          onPress={() => navigation.navigate('AnimalForm', { animal: item.animal })}
+          onPress={() => navigation.navigate('AnimalHistory', { animal: item.animal })}
         >
           <Block flex space="between" style={styles.cardDescription}>
             <Block flex>
