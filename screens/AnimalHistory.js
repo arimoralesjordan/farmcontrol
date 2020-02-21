@@ -13,32 +13,15 @@ import nowTheme from '../constants/Theme';
 export default function AnimalHistory(props) {
   const [isLoading, setisLoading] = React.useState(false);
   const [isInit, setisInit] = React.useState(true);
-  const [searchText, setSearchText] = React.useState('');
-  const [animals, setAnimals] = React.useState([]);
-  searchAnimal = async text => {
+  const [historial, setHistorial] = React.useState([]);
+  const [options, setOptions] = React.useState({
+    animal_id: props.navigation.state.params.animal.id,
+    limit: 30,
+    page: 1
+  });
+  searchHistorial = async text => {
     setisLoading(true);
-    //setSearchText(text);
-    ControlGanaderoController.searchAnimal(text)
-      .then(animallin => {
-        var anl = animallin.map(animal => {
-          var image = { uri: animal.other_attribute.image };
-          if (typeof animal.other_attribute.image == 'number') {
-            image = animal.other_attribute.image;
-          }
-          return {
-            title: animal.name,
-            animal: animal,
-            image: image,
-            cta: 'Ver Historial'
-          };
-        });
-        setAnimals(anl);
-        setisLoading(false);
-      })
-      .catch(error => {
-        console.log('error', error);
-        setisLoading(false);
-      });
+    setHistorial(ControlGanaderoController.searchHistorial(options));
   };
   React.useEffect(() => {
     if (isInit) {
@@ -46,7 +29,6 @@ export default function AnimalHistory(props) {
       //searchAnimal();
     }
   });
-  console.log('Redering Cosntrol Gandero', new Date());
   return (
     <>
       <Header

@@ -1,4 +1,5 @@
 import { Animal, Form, AnimalHasForm } from '../models';
+import FormRepository from '../repository/FormRepository';
 
 export default class ControlGanadero {
   static async searchAnimal(text) {
@@ -15,6 +16,9 @@ export default class ControlGanadero {
       order: 'name ASC'
     };
     return Animal.query(options);
+  }
+  static async searchHistorial(options) {
+    return FormRepository.searchHistorial(options);
   }
   static async _init() {
     return Animal.createTable().then(() => {
