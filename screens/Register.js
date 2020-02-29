@@ -32,7 +32,7 @@ export default function Register(props) {
   console.log('backend.url', backend.url);
   const [isLoading, setisLoading] = React.useState(false);
 
-  _signInAsync = async () => {
+  const _signInAsync = async () => {
     setisLoading(true);
     fetch(backend.url + '/api/register', {
       method: 'POST',
@@ -53,7 +53,7 @@ export default function Register(props) {
         console.error(error);
       });
   };
-  _logInAsync = async () => {
+  const _logInAsync = async () => {
     fetch(backend.url + '/oauth/token', {
       method: 'POST',
       headers: {

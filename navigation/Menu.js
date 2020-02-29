@@ -67,7 +67,7 @@ const Drawer = props => (
               marginTop: 30,
               marginLeft: 20,
               marginBottom: 10,
-              fontFamily: 'montserrat-regular',
+              /*fontFamily: 'montserrat-regular',*/
               fontWeight: '300',
               fontSize: 12
             }}
@@ -77,13 +77,13 @@ const Drawer = props => (
         </Block>
         <TouchableOpacity
           onPress={() => props.navigation.navigate('Onboarding')}
-          style={{ marginLeft: 10, fontFamily: 'montserrat-regular' }}
+          style={{ marginLeft: 10 /*fontFamily: 'montserrat-regular'*/ }}
         >
           <DrawerItem {...props} title="GETTING STARTED" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => _logOutAsync(props)}
-          style={{ marginLeft: 10, fontFamily: 'montserrat-regular' }}
+          style={{ marginLeft: 10 /*fontFamily: 'montserrat-regular'*/ }}
         >
           <DrawerItem {...props} title="LOGOUT" />
         </TouchableOpacity>

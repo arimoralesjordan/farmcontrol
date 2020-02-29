@@ -43,36 +43,34 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    Font.loadAsync(
-      {
-        'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
-        'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
-      },
-      () => {
-        this.setState({ fontLoaded: true });
-      }
-    );
-    this.setState({ fontLoaded: true });
+    console.log('LoadingFont');
+    Font.loadAsync({
+      'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
+      'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
+    }).then(() => {
+      console.log('LoadingFontFinish1');
+      this.setState({ ...this.state, fontLoaded: true });
+    });
+    console.log('LoadingFontFinish2');
+    //this.setState({ ...this.state, fontLoaded: true });
   }
 
   _cacheResourcesAsync = () => {
-    this.setState({ fontLoaded: true });
-    return Font.loadAsync(
-      {
-        'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
-        'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
-      },
-      () => {
-        this.setState({ fontLoaded: true });
-      }
-    );
+    return Font.loadAsync({
+      'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
+      'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
+    }).then(() => {
+      console.log('LoadingFontFinish3');
+      this.setState({ ...this.state, fontLoaded: true });
+    });
   };
 
   render() {
+    console.log('InitialRender', new Date());
     if (!this.state.isLoadingComplete) {
       return (
         <AppLoading
-          startAsync={this._cacheResourcesAsync}
+          startAsync={this._loadResourcesAsync}
           onError={this._handleLoadingError}
           onFinish={this._handleFinishLoading}
         />
@@ -93,18 +91,20 @@ export default class App extends React.Component {
   }
 
   _loadResourcesAsync = async () => {
-    return Promise.all([..._cacheResourcesAsync(), cacheImages(assetImages)]);
+    return Promise.all([this._cacheResourcesAsync(), cacheImages(assetImages)]);
   };
 
   _handleLoadingError = error => {
     // In this case, you might want to report the error to your error
     // reporting service, for example Sentry
-    //console.warn( 'Warn', error );
+    console.warn('Warn', error);
   };
 
   _handleFinishLoading = () => {
+    console.log('_handleFinishLoading1', this.state);
     if (this.state.fontLoaded) {
-      this.setState({ isLoadingComplete: true });
+      console.log('_handleFinishLoading2');
+      this.setState({ ...this.state, isLoadingComplete: true });
     }
   };
 }

@@ -23,7 +23,7 @@ export default function Onboarding(props) {
   };
   React.useEffect(effect => {
     if (userToken) {
-      props.navigation.navigate('ControlGanaderoStack');
+      //props.navigation.navigate('ControlGanaderoStack');
     }
   });
   _initDb = async () => {
@@ -78,7 +78,7 @@ export default function Onboarding(props) {
               <Block middle>
                 <Text
                   style={{
-                    fontFamily: 'montserrat-regular',
+                    //fontFamily: 'montserrat-regular',
                     bottom: 50,
                     position: 'absolute',
                     letterSpacing: 2,
@@ -93,7 +93,15 @@ export default function Onboarding(props) {
               </Block>
             </Block>
             <Block middle row style={{ marginTop: 15, marginBottom: 30 }}>
-              <Text color="white" size={16} style={{ fontFamily: 'montserrat-regular' }}>
+              <Text
+                color="white"
+                size={16}
+                style={
+                  {
+                    /*fontFamily: 'montserrat-regular'*/
+                  }
+                }
+              >
                 Programado por Nerds
               </Text>
             </Block>
@@ -115,7 +123,7 @@ export default function Onboarding(props) {
                 }}
               >
                 <Text
-                  style={{ fontFamily: 'montserrat-bold', fontSize: 14 }}
+                  style={{ /*fontFamily: 'montserrat-bold',*/ fontSize: 14 }}
                   color={theme.COLORS.WHITE}
                 >
                   Comencemos

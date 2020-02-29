@@ -27,6 +27,7 @@ import { Animal, Form, AnimalHasForm } from '../models';
 const { width, height } = Dimensions.get('screen');
 import { Ionicons } from '@expo/vector-icons';
 import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
@@ -35,7 +36,7 @@ const initAnimal = {
   name: '',
   father_id: '',
   mother_id: '',
-  birthdate: moment().format('YYYY-MM-DD'),
+  birthdate: null,
   other_attribute: { image: null }
 };
 export default function AnimalForm(props) {
@@ -44,7 +45,23 @@ export default function AnimalForm(props) {
   const [isLoading, setisLoading] = React.useState(false);
   const [isInit, setisInit] = React.useState(true);
   const [animals, setAnimals] = React.useState([]);
-  getPermissionAsync = async () => {
+  const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+  moment.locale('en');
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = date => {
+    console.log('Date', date);
+    setState({ ...state, birthdate: moment(date).format('YYYY-MM-DD') });
+    hideDatePicker();
+  };
+
+  const getPermissionAsync = async () => {
     if (Constants.platform.ios) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       if (status !== 'granted') {
@@ -52,7 +69,7 @@ export default function AnimalForm(props) {
       }
     }
   };
-  _pickImage = async () => {
+  const _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -64,7 +81,7 @@ export default function AnimalForm(props) {
     }
   };
 
-  searchAnimal = async text => {
+  const searchAnimal = async text => {
     setisLoading(true);
     ControlGanaderoController.searchAnimal(text)
       .then(animallin => {
@@ -82,18 +99,18 @@ export default function AnimalForm(props) {
       setisInit(false);
       searchAnimal();
       getPermissionAsync();
-    }
-    if (typeof props.navigation.state.params != 'undefined') {
-      props.navigation.state.params.animal.birthdate = new Date(); // moment(initAnimal.birthdate).toDate();
-      if (state.id != props.navigation.state.params.animal.id) {
-        setState(props.navigation.state.params.animal);
+      if (typeof props.navigation.state.params != 'undefined') {
+        props.navigation.state.params.animal.birthdate = new Date(); // moment(initAnimal.birthdate).toDate();
+        if (state.id != props.navigation.state.params.animal.id) {
+          setState(props.navigation.state.params.animal);
+        }
+      } else {
+        setState(initAnimal);
       }
-    } else {
-      setState(initAnimal);
     }
   });
 
-  SaveAnimal = async () => {
+  const SaveAnimal = async () => {
     setisLoading(true);
     Animal._createOrUpdate(state)
       .then(animal => {
@@ -107,12 +124,11 @@ export default function AnimalForm(props) {
         setisLoading(false);
       });
   };
-  console.log('AnimalFormProps', typeof state.other_attribute.image);
-  console.log("moment().format('YYYY-MM-DD')", moment().format('YYYY-MM-DD'));
   var image = { uri: state.other_attribute.image };
   if (typeof state.other_attribute.image == 'number') {
     image = state.other_attribute.image;
   }
+  console.log('state.birthdate', state.birthdate);
   return (
     <DismissKeyboard>
       <Block flex middle>
@@ -201,30 +217,44 @@ export default function AnimalForm(props) {
                               }}
                             />
                           </Block>
-                          <Block center width={width * 0.8}>
-                            <DatePicker
-                              style={{ width: 200 }}
-                              date={moment().format('YYYY-MM-DD')}
-                              mode="date"
+                          <Block width={width * 0.8} style={{ marginBottom: 5 }} center>
+                            <Button
+                              color="primary"
+                              round
+                              style={styles.createButton}
+                              onPress={showDatePicker}
+                            >
+                              <Text
+                                style={{ fontFamily: 'montserrat-bold' }}
+                                size={14}
+                                color={nowTheme.COLORS.WHITE}
+                              >
+                                Fecha
+                              </Text>
+                            </Button>
+                            <Input
                               placeholder="Fecha de Nacimiento"
-                              format="YYYY-MM-DD"
-                              minDate="2016-05-01"
-                              maxDate={moment().format('YYYY-MM-DD')}
-                              confirmBtnText="Confirm"
-                              cancelBtnText="Cancel"
-                              customStyles={{
-                                dateIcon: {
-                                  position: 'absolute',
-                                  left: 0,
-                                  top: 4,
-                                  marginLeft: 0
-                                },
-                                dateInput: { marginLeft: 36 }
-                                // ... You can check the source to find the other keys.
-                              }}
-                              onDateChange={date => {
-                                setState({ ...state, birthdate: date });
-                              }}
+                              style={styles.inputs}
+                              value={
+                                state.birthdate != null
+                                  ? state.birthdate
+                                  : moment().format('YYYY-MM-DD')
+                              }
+                              iconContent={
+                                <Icon
+                                  size={16}
+                                  color="#ADB5BD"
+                                  name="profile-circle"
+                                  family="NowExtra"
+                                  style={styles.inputIcons}
+                                />
+                              }
+                            />
+                            <DateTimePickerModal
+                              isVisible={isDatePickerVisible}
+                              mode="date"
+                              onConfirm={handleConfirm}
+                              onCancel={hideDatePicker}
                             />
                           </Block>
                           <Block center>
