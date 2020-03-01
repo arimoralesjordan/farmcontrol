@@ -7,5 +7,6 @@ import Input from './Input';
 import Switch from './Switch';
 import Select from './Select';
 import AnimalCard from './AnimalCard';
+import FormCard from './FormCard';
 
-export { Button, Card, DrawerItem, Icon, Input, Header, Switch, Select, AnimalCard };
+export { Button, Card, DrawerItem, Icon, Input, Header, Switch, Select, AnimalCard, FormCard };

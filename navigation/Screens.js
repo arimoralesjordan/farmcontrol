@@ -16,6 +16,7 @@ import Onboarding from '../screens/Onboarding';
 import ControlGanadero from '../screens/ControlGanadero';
 import AnimalForm from '../screens/AnimalForm';
 import AnimalHistory from '../screens/AnimalHistory';
+import AnimalHistoryForm from '../screens/AnimalHistoryForm';
 
 // settings
 import SettingsScreen from '../screens/Settings';
@@ -97,6 +98,13 @@ const ControlGanaderoStack = createStackNavigator(
     },
     AnimalForm: {
       screen: AnimalForm,
+      navigationOptions: ({ navigation }) => ({
+        header: <Header left={<Block />} white transparent title="" navigation={navigation} />,
+        headerTransparent: true
+      })
+    },
+    AnimalHistoryForm: {
+      screen: AnimalHistoryForm,
       navigationOptions: ({ navigation }) => ({
         header: <Header left={<Block />} white transparent title="" navigation={navigation} />,
         headerTransparent: true

@@ -126,6 +126,19 @@ class Header extends React.Component {
             isWhite={white}
           />
         ];
+      case 'AnimalHistory':
+        var rightOnPress = () => {};
+        if (typeof this.props.rightOnPress != undefined) {
+          rightOnPress = this.props.rightOnPress;
+        }
+        return [
+          <AddButton
+            key="simple-add"
+            innerOnPress={rightOnPress}
+            navigation={navigation}
+            isWhite={white}
+          />
+        ];
       case 'Settings':
         return [
           <BellButton key="chat-search" navigation={navigation} isWhite={white} />,

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, ActivityIndicator, Dimensions, ScrollView, View } from 'react-native';
 import { Block, theme, Text } from 'galio-framework';
 import Icon from '../components/Icon';
-import { AnimalCard, Button } from '../components';
+import { FormCard, Button } from '../components';
 import articles from '../constants/articles';
 const { width } = Dimensions.get('screen');
 import ControlGanaderoController from '../controllers/ControlGanaderoController';
@@ -10,18 +10,34 @@ import ControlGanaderoController from '../controllers/ControlGanaderoController'
 import Header from '../components/Header';
 import nowTheme from '../constants/Theme';
 
-export default function AnimalHistory(props) {
+export default function AnimalHistoryForm(props) {
   const [isLoading, setisLoading] = React.useState(false);
   const [isInit, setisInit] = React.useState(true);
-  const [historial, setHistorial] = React.useState([]);
+  const [forms, setForms] = React.useState([]);
+  const [form, setForm] = React.useState(null);
   const [options, setOptions] = React.useState({
     animal_id: props.navigation.state.params.animal.id,
     limit: 30,
     page: 1
   });
-  searchHistorial = async text => {
+  const searchForm = async text => {
     setisLoading(true);
-    setHistorial(ControlGanaderoController.searchHistorial(options));
+    ControlGanaderoController.searchForm(text)
+      .then(formList => {
+        var anl = formList.map(form => {
+          return {
+            title: form.name,
+            animal: form,
+            cta: 'Agregar'
+          };
+        });
+        setForms(anl);
+        setisLoading(false);
+      })
+      .catch(error => {
+        console.log('error', error);
+        setisLoading(false);
+      });
   };
   React.useEffect(() => {
     if (isInit) {
@@ -33,19 +49,18 @@ export default function AnimalHistory(props) {
     <>
       <Header
         search
-        searchAction={searchHistorial}
-        searchPlaceholder={'Buscar Historial'}
-        title="Historial"
+        searchAction={searchForm}
+        searchPlaceholder={'Buscar Formulario'}
+        title="Agregar Historial"
         navigation={props.navigation}
-        rightOnPress={() => {
-          props.navigation.navigate('AnimalHistoryForm', {
-            animal: props.navigation.state.params.animal
-          });
-        }}
       />
       <Block flex center style={styles.home}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.articles}>
-          <Block flex></Block>
+          <Block flex>
+            {forms.map((form, index) => {
+              return <FormCard key={index} item={form} horizontal />;
+            })}
+          </Block>
         </ScrollView>
       </Block>
       {isLoading && (

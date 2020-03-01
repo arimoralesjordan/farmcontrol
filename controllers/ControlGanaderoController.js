@@ -17,9 +17,25 @@ export default class ControlGanadero {
     };
     return Animal.query(options);
   }
+  static async searchForm(text) {
+    if (text == undefined || text == '') {
+      text = '%';
+    }
+    const options = {
+      columns: '*',
+      where: {
+        name_cont: text
+      },
+      page: 1,
+      limit: 30,
+      order: 'name ASC'
+    };
+    return Form.query(options);
+  }
   static async searchHistorial(options) {
     return FormRepository.searchHistorial(options);
   }
+
   static async _init() {
     return Animal.createTable().then(() => {
       return Form.createTable().then(() => {
